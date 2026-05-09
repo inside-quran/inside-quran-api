@@ -23,7 +23,8 @@ app.use(express.json());
 const allowedOrigins = [
   'http://localhost:5173', // Vite default
   'https://insidequran.in',
-  'https://www.insidequran.in'
+  'https://www.insidequran.in',
+  'https://inside-quran-yowx.vercel.app', // Vercel deployment URL
 ];
 
 app.use(cors({
