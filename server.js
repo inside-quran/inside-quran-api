@@ -244,6 +244,29 @@ app.get('/api/discover/duas', (req, res) => {
   res.sendFile(path.join(DATA_DIR, 'discover', 'duas.json'));
 });
 
+// --- PROTECTED DISCOVER ROUTES (Admin Only) ---
+const ALLOWED_DISCOVER = ['duas', 'topics', 'shane-nuzul'];
+
+app.put('/api/admin/discover/:type', authenticateToken, async (req, res) => {
+  const { type } = req.params;
+
+  // Only allow known types
+  if (!ALLOWED_DISCOVER.includes(type)) {
+    return res.status(400).json({ error: 'Invalid discover type' });
+  }
+
+  const filename = `${type}.json`;
+  const filePath = path.join(DATA_DIR, 'discover', filename);
+
+  try {
+    await fs.writeFile(filePath, JSON.stringify(req.body, null, 2), 'utf-8');
+    res.json({ success: true, message: `${type} updated` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: `Failed to update ${type}` });
+  }
+});
+
 // --- PROTECTED ROUTES (Admin Only) ---
 
 // Example protected route for updating a verse's translation
